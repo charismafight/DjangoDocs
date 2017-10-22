@@ -1,2 +1,1 @@
-# DjangoDocs
 for DjangoDocs
