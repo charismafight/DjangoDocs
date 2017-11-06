@@ -49,22 +49,9 @@ class Publisher(models.Model):
         return self.name
 
 
-class Book(models.Model):
-    name = models.CharField(max_length=300)
-    pages = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    rating = models.FloatField()
-    authors = models.ManyToManyField(Author)
-    publishers = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    pubdate = models.DateField()
-
-    def __str__(self):
-        return self.name
-
-
 class Store(models.Model):
     name = models.CharField(max_length=300)
-    books = models.ManyToManyField(Book)
+    # books = models.ManyToManyField(Book)
     registered_users = models.PositiveIntegerField()
 
     def __str__(self):
@@ -80,3 +67,23 @@ class Item(models.Model):
 
 
 Item
+
+
+class Piece(models.Model):
+    name = models.CharField(max_length=100)
+    pass
+
+
+class Article(Piece):
+    article_piece = models.OneToOneField(
+        Piece, on_delete=models.CASCADE, parent_link=True)
+
+
+class Book(Piece):
+    book_piece = models.OneToOneField(
+        Piece, on_delete=models.CASCADE, parent_link=True)
+
+
+class BookReview(Book, Article):
+    name = models.CharField(max_length=200)
+    pass
