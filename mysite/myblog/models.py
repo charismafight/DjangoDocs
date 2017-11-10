@@ -70,7 +70,6 @@ Item
 
 
 class Piece(models.Model):
-    name = models.CharField(max_length=100)
     pass
 
 
