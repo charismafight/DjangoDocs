@@ -86,3 +86,6 @@ class Book(Piece):
 class BookReview(Book, Article):
     name = models.CharField(max_length=200)
     pass
+
+
+
