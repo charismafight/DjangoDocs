@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from .forms import UploadFileForm
+from django.http import HttpResponseRedirect, HttpResponse
+from .forms import UploadFileForm, NameForm
 from django.views.generic.edit import FormView
 
 
@@ -39,3 +39,27 @@ class FormFieldView(FormView):
             return self.form_valid(form)
         else:
             self.form_invalid(form)
+
+
+def login(request):
+    if request.method == 'POST':
+        if request.session.test_cookie_worked():
+            if request.session['password'] == 'abc':
+                request.session.delete_test_cookie()
+                return HttpResponse('login success')
+            else:
+                return HttpResponse('wrong username or password')
+        else:
+            return HttpResponse('please enable your cookie')
+    request.session.set_test_cookie()
+    return render(request, 'login.html')
+
+
+def get_name(request):
+    if request.method == 'POST':
+        form = NameForm(request.POST)
+        if form.is_valid():
+            return HttpResponse('get name' + form.your_name)
+    else:
+        form = NameForm()
+    return render(request, 'name.html', {'form': form})
