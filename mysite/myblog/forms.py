@@ -1,4 +1,5 @@
 from django import forms
+from .models import Article
 
 
 class UploadFileForm(forms.Form):
@@ -14,3 +15,12 @@ class NameForm(forms.Form):
 
 
 NameForm
+
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['article_piece']
+
+
+ArticleForm
