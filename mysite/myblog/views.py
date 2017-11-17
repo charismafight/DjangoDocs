@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 
-from .models import Publisher
+from .models import Publisher, Book, Author
 from .forms import UploadFileForm, NameForm
 from django.views.generic.edit import FormView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.utils import timezone
 
 
 # Create your views here.
@@ -70,3 +71,32 @@ def get_name(request):
 
 class PublisherList(ListView):
     model = Publisher
+    context_object_name = 'publishers'
+
+
+class BookList(ListView):
+    queryset = Book.objects.order_by('-publication_date')
+    context_object_name = 'book_list'
+
+
+class PublisherBookList(ListView):
+    template_name = 'books/books_by_publisher.html'
+
+    def get_queryset(self):
+        self.publisher = get_object_or_404(Publisher, name=self.args[0])
+        return Book.objects.filter(publisher=self.publisher)
+
+    def get_context_data(self, **kwargs):
+        context = super(PublisherBookList, self).get_context_data(**kwargs)
+        context['publisher'] = self.publisher
+        return context
+
+
+class AuthorDetailView(DetailView):
+    queryset = Author.objects.all()
+
+    def get_object(self):
+        object = super(AuthorDetailView, self).get_object()
+        object.last_accessed = timezone.now()
+        object.save()
+        return object
