@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
@@ -14,6 +14,12 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         # return the latest 5 objects of questions
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    output = ', '.join([q.question_text for q in latest_question_list])
+    return HttpResponse(output)
 
 
 class QuestionDetail(generic.DetailView):

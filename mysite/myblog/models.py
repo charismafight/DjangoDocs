@@ -19,8 +19,10 @@ ThemeBlog
 
 
 class Author(models.Model):
+    salutation = models.CharField(max_length=10, default='')
     name = models.CharField(max_length=200)
     email = models.EmailField()
+    headshot = models.ImageField(upload_to='author_headshorts', null=True)
 
     def __str__(self):
         return self.name
@@ -42,8 +44,15 @@ class Entry(models.Model):
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=300)
-    num_awards = models.IntegerField()
+    name = models.CharField(max_length=30)
+    address = models.CharField(max_length=50)
+    city = models.CharField(max_length=60)
+    state_province = models.CharField(max_length=30)
+    country = models.CharField(max_length=50)
+    website = models.URLField()
+
+    class Meta:
+        ordering = ["-name"]
 
     def __str__(self):
         return self.name
@@ -81,11 +90,12 @@ class Article(Piece):
 class Book(Piece):
     book_piece = models.OneToOneField(
         Piece, on_delete=models.CASCADE, parent_link=True)
+    title = models.CharField(max_length=200)
+    authors = models.ManyToManyField(Author)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    publication_date = models.DateField(null=True)
 
 
 class BookReview(Book, Article):
     name = models.CharField(max_length=200)
     pass
-
-
-

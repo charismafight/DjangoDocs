@@ -23,6 +23,7 @@ urlpatterns = [
     # url(r'^publisher-polls/', include('polls.urls', namespace='publisher-polls')),
     url(r'^author-polls/', include('polls.urls')),
     url(r'^publisher-polls/', include('polls.urls')),
+    url(r'^myblog/', include('myblog.urls')),
 ]
 
 handler404 = 'mysite.views.my_404_view'

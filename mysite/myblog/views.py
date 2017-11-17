@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
+
+from .models import Publisher
 from .forms import UploadFileForm, NameForm
 from django.views.generic.edit import FormView
+from django.views.generic import ListView
 
 
 # Create your views here.
@@ -63,3 +66,7 @@ def get_name(request):
     else:
         form = NameForm()
     return render(request, 'name.html', {'form': form})
+
+
+class PublisherList(ListView):
+    model = Publisher
