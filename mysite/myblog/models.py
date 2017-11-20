@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Avg
+from django.urls import reverse
 
 
 # Create your models here.
@@ -24,6 +25,9 @@ class Author(models.Model):
     email = models.EmailField()
     headshot = models.ImageField(upload_to='author_headshorts', null=True)
     last_accessed = models.DateTimeField()
+
+    def get_absolute_url(self):
+        return reverse('author-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name

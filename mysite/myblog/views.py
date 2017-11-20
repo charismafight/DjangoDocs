@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
-
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Publisher, Book, Author
 from .forms import UploadFileForm, NameForm
 from django.views.generic.edit import FormView
 from django.views.generic import ListView, DetailView
 from django.utils import timezone
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -100,3 +101,42 @@ class AuthorDetailView(DetailView):
         object.last_accessed = timezone.now()
         object.save()
         return object
+
+
+class AjaxableResponseMixin(object):
+    """
+    Mixin to ajax support to  a form
+    must be used with an object-based Formview like CreateView
+    """
+
+    def form_invalid(self, form):
+        response = super(AjaxableResponseMixin, self).form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+    def form_valid(self, form):
+        response = super(AjaxableResponseMixin, self).form_valid(form)
+        if self.request.is_ajax():
+            data = {
+                'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+            return response
+
+
+class CreateAuthor(AjaxableResponseMixin, CreateView):
+    model = Author
+    fields = ['name']
+
+
+class UpdateAuthor(UpdateView):
+    model = Author
+    fields = ['name']
+
+
+class DeleteAuthor(DeleteView):
+    model = Author
+    success_url = reverse_lazy('author-list')
